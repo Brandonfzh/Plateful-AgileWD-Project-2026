@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/Brandonfzh/Plateful-AgileWD-Project-2026/actions/workflows/ci.yml/badge.svg)
 
-> **Fork note (Brandon Fong):** This is my fork of the team project below. I added a GitHub Actions CI pipeline (`.github/workflows/ci.yml`) that runs the project's unit tests and Selenium end-to-end tests on every push and pull request.
+> **Fork note (Brandon Fong):** This is my fork of the team project below. I added a GitHub Actions CI pipeline (`.github/workflows/ci.yml`) that runs the project's unit tests and Selenium end-to-end tests and builds a Docker image on every push and pull request, plus a `Dockerfile` so the app can be run in a container.
 
 ## Context
 The web application Plateful was created for a group project as part of the unit CITS3403/CITS5505: Agile Web Development at [The University of Western Australia](https://www.uwa.edu.au/home) during the first semester of 2026.
@@ -135,12 +135,14 @@ Press `Ctrl + C` to stop. Run `deactivate` to exit the virtual environment.
 ```
 Plateful-AgileWD-Project-2026/
 ├── app.py
+├── Dockerfile               ← container image for the Flask app
+├── .dockerignore
 ├── CITS3403-User Stories.pdf
 ├── ERD
 │   └── ERD_Plateful.png
 ├── .github
 │   └── workflows
-│       └── ci.yml           ← GitHub Actions CI (unit + Selenium tests)
+│       └── ci.yml           ← GitHub Actions CI (unit tests, Selenium tests, Docker build)
 ├── main
 │   ├── __init__.py          ← app factory, extension setup
 │   ├── blueprints.py        ← Blueprint registration
@@ -196,7 +198,16 @@ Plateful-AgileWD-Project-2026/
 
 ## Continuous Integration
 
-On every push and pull request, GitHub Actions installs dependencies on Python 3.12, runs the unit tests (`tests/test_unit.py`), and then runs the Selenium end-to-end tests (`tests/test_selenium.py`) headless. See `.github/workflows/ci.yml`.
+On every push and pull request, GitHub Actions installs dependencies on Python 3.12, runs the unit tests (`tests/test_unit.py`), and then runs the Selenium end-to-end tests (`tests/test_selenium.py`) headless. A third job builds the Docker image and checks that the app starts and responds. See `.github/workflows/ci.yml`.
+
+### Run with Docker
+
+```bash
+docker build -t plateful .
+docker run -p 5000:5000 -e APP_SECRET_KEY=change-me plateful
+```
+
+Then open http://127.0.0.1:5000.
 
 ---
 
@@ -212,4 +223,4 @@ On every push and pull request, GitHub Actions installs dependencies on Python 3
 | Frontend     | HTML · CSS · JavaScript                           |
 | Templating   | Jinja2                                            |
 | Fonts        | Google Fonts (Fraunces, Figtree)                  |
-| CI           | GitHub Actions · pytest · Selenium                |
+| CI / Containers | GitHub Actions · pytest · Selenium · Docker    |
